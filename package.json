@@ -1,0 +1,24 @@
+{
+  "name": "example-menubar-app",
+  "version": "1.0.0",
+  "description": "example menubar electron app",
+  "dependencies": {
+    "menubar": "*",
+    "osascript": "^1.2.0",
+    "request" : "latest",
+    "cheerio" : "latest"
+  },
+  "devDependencies": {
+    "asar": "^0.12.3",
+    "electron-packager": "^5.1.0",
+    "electron-prebuilt": "^0.36.0"
+  },
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-packager . SpotifyLyrics --platform=darwin --arch=x64 --version=0.36.0 --icon=Icon.icns --overwrite",
+    "package": "asar pack SpotifyLyrics-darwin-x64/SpotifyLyrics.app/Contents/Resources/app SpotifyLyrics-darwin-x64/SpotifyLyrics.app/Contents/Resources/app.asar",
+    "protect": "rm -rf SpotifyLyrics-darwin-x64/SpotifyLyrics.app/Contents/Resources/app",
+    "ship": "npm run build && npm run package && npm run protect"
+  }
+}
