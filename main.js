@@ -1,7 +1,9 @@
-var menubar = require("menubar");
-var osascript = require("osascript").file;
-var request = require("request");
-var cheerio = require("cheerio");
+"use strict";
+
+const menubar = require("menubar");
+const osascript = require("osascript").file;
+const request = require("request");
+const cheerio = require("cheerio");
 
 function getSongInfo(callback) {
     osascript("songInfo.applescript", (err, songInfo) => {
@@ -15,15 +17,16 @@ function cleanUp(string) {
 }
 
 function getLyrics(song, artist, callback) {
-    var url = "http://www.azlyrics.com/lyrics/" + cleanUp(artist) + "/" + cleanUp(song) + ".html";
-    request(url, function(error, response, html) {
-        var $ = cheerio.load(html);
-        var lyrics = $(".col-xs-12.col-lg-8.text-center div:not([class])");
-        return callback(error, lyrics.html());
+    let url = "http://www.azlyrics.com/lyrics/" + cleanUp(artist) + "/" + cleanUp(song) + ".html";
+    request(url, (error, response, html) => {
+        let $ = cheerio.load(html);
+        let lyricsHtml = $(".col-xs-12.col-lg-8.text-center div:not([class])").html();
+        let lyrics = lyricsHtml || "No lyrics for " + artist + " - " + song;
+        return callback(error, lyrics);
     });
 }
 
-var mb = menubar();
+let mb = menubar();
 
 mb.on("ready", function ready () {
   console.log("app is ready");
@@ -31,7 +34,7 @@ mb.on("ready", function ready () {
 
 mb.on("show", () => {
     getSongInfo((songInfo) => {
-      getLyrics(songInfo.song, songInfo.artist, function(error, lyrics) {
+      getLyrics(songInfo.song, songInfo.artist, (error, lyrics) => {
         if (error) {
           throw error;
         }
